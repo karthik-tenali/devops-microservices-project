@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  user-service:
+    build: ./services/user-service-python
+    ports:
+      - "8000:8000"
+    restart: always
+
+  product-service:
+    build: ./services/product-service-nodejs
+    ports:
+      - "3001:3001"
+    restart: always
+
+  order-service:
+    build: ./services/order-service-nodejs
+    ports:
+      - "4000:4000"
+    restart: always
+
+  frontend:
+    build: ./frontend-react
+    ports:
+      - "3000:80" # maps nginx container port 80 to host 3000
+    restart: always
+

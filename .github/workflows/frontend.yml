@@ -1,0 +1,39 @@
+name: Frontend React CI
+
+on:
+  push:
+    paths:
+      - 'frontend-react/**'
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'frontend-react/**'
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js 18
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Install dependencies
+      run: npm install
+      working-directory: ./frontend-react
+
+    - name: Run tests
+      run: npm test
+      working-directory: ./frontend-react
+
+    - name: Build React app
+      run: npm run build
+      working-directory: ./frontend-react
+

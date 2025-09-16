@@ -3,12 +3,12 @@ name: User Service CI
 on:
   push:
     paths:
-      - 'services/user-service-fastapi/**'
+      - 'services/user-service-python/**'
     branches:
       - main
   pull_request:
     paths:
-      - 'services/user-service-fastapi/**'
+      - 'services/user-service-python/**'
     branches:
       - main
 
@@ -27,12 +27,12 @@ jobs:
 
     - name: Install dependencies
       run: pip install -r requirements.txt
-      working-directory: ./services/user-service-fastapi
+      working-directory: ./services/user-service-python
 
     - name: Run tests
       run: pytest
-      working-directory: ./services/user-service-fastapi
+      working-directory: ./services/user-service-python
 
     - name: Build Docker image
-      run: docker build -t user-service:latest ./services/user-service-fastapi
+      run: docker build -t user-service:latest ./services/user-service-python
 

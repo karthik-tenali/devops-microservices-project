@@ -30,30 +30,31 @@ jobs:
             type: node
           - folder: user-service-python
             type: python
-          - folder: ../frontend-react
+          - folder: frontend-react
             type: node
 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-      
+
       - name: Set up Node.js
         if: ${{ matrix.type == 'node' }}
         uses: actions/setup-node@v3
         with:
           node-version: 18
-      
+
       - name: Set up Python
         if: ${{ matrix.type == 'python' }}
         uses: actions/setup-python@v4
         with:
           python-version: 3.10
-      
+
       - name: Install Dependencies (Node.js)
         if: ${{ matrix.type == 'node' }}
         run: npm install
-        working-directory: ${{ matrix.folder }}
-      
+        # FIXED working-directory resolving service folders under 'services/' except frontend-react
+        working-directory: ${{ matrix.folder == 'frontend-react' && 'frontend-react' || format('services/{0}', matrix.folder) }}
+
       - name: Install Dependencies (Python)
         if: ${{ matrix.type == 'python' }}
         run: pip install --no-cache-dir -r requirements.txt
@@ -62,7 +63,8 @@ jobs:
       - name: Run Tests (Node.js & React)
         if: ${{ matrix.type == 'node' }}
         run: npm test
-        working-directory: ${{ matrix.folder }}
+        # SAME working-directory fix as install step
+        working-directory: ${{ matrix.folder == 'frontend-react' && 'frontend-react' || format('services/{0}', matrix.folder) }}
 
       - name: Run Tests (Python)
         if: ${{ matrix.type == 'python' }}
@@ -71,5 +73,6 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t ${{ matrix.folder }}:latest .
-        working-directory: ${{ matrix.folder == '../frontend-react' && 'frontend-react' || format('services/{0}', matrix.folder) }}
+        # SAME working-directory fix for docker build
+        working-directory: ${{ matrix.folder == 'frontend-react' && 'frontend-react' || format('services/{0}', matrix.folder) }}
 
